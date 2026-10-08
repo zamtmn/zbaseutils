@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="zbaseutils"/>
     <Type Value="RunAndDesignTime"/>
@@ -80,6 +80,10 @@
       <Item>
         <Filename Value="src\uzbusable.pas"/>
         <UnitName Value="uzbUsable"/>
+      </Item>
+      <Item>
+        <Filename Value="src\uzbencoding.pas"/>
+        <UnitName Value="uzbEncoding"/>
       </Item>
     </Files>
     <RequiredPkgs>
