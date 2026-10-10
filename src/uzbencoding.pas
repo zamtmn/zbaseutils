@@ -30,7 +30,7 @@ type
     fcpUTF8,
     fcpUTF8BOM,
     fcpUTF16,
-    fcpUTF16BOM
+    fcpUTF16BE
   );
   PFileCodePage=^TFileCodePage;
 
@@ -38,7 +38,7 @@ type
     cpUTF8,
     cpUTF8BOM,
     cpUTF16,
-    cpUTF16BOM
+    cpUTF16BE
   );
   TU32Char=longword;
   TUnicodeBlock=(ubWrong,
@@ -343,10 +343,72 @@ type
     ubSupplementary_Private_Use_Area_A,
     ubSupplementary_Private_Use_Area_B);
 
+function IsNeedBOM(const ACodePage:TCodePage):Boolean;
+function getBOM(const ACodePage:TCodePage):RawByteString;
+function getEncoding(const ACodePage:TCodePage):TEncoding;
+function EnCodeString(const AStr:String;const ACodePage:TCodePage):RawByteString;
+function TXTCodePage(AFileCodePage:TFileCodePage):TCodePage;
+
 var
   TxtFileSaveCodePage:TFileCodePage=fcpDefault;
 
 implementation
+
+function IsNeedBOM(const ACodePage:TCodePage):Boolean;
+begin
+  if ACodePage in [cpANSI,cpUTF8]then
+    result:=false
+  else
+    result:=true;
+end;
+
+function getBOM(const ACodePage:TCodePage):RawByteString;
+begin
+  case ACodePage of
+    cpUTF8BOM:
+      result:=#$EF#$BB#$BF;
+    cpUTF16:
+      result:=#$FF#$FE;
+    cpUTF16BE:
+      result:=#$FE#$FF;
+    else
+      result:='';
+  end;
+end;
+
+function getEncoding(const ACodePage:TCodePage):TEncoding;
+begin
+  case ACodePage of
+    cpANSI:
+      Result:=TEncoding.ANSI;
+    cpUTF8:
+      Result:=TEncoding.UTF8;
+    cpUTF8BOM:
+      Result:=TEncoding.UTF8;
+    cpUTF16:
+      Result:=TEncoding.Unicode;
+    cpUTF16BE:
+      Result:=TEncoding.BigEndianUnicode;
+  end;
+end;
+
+function EnCodeString(const AStr:String;const ACodePage:TCodePage):RawByteString;
+begin
+  result:=AStr;
+  SetCodePage(result,StringCodePage(AStr),false);
+  case ACodePage of
+    cpANSI:
+      SetCodePage(result,CP_ACP,true);
+    cpUTF8:
+      SetCodePage(result,CP_UTF8,true);
+    cpUTF8BOM:
+      SetCodePage(result,CP_UTF8,true);
+    cpUTF16:
+      SetCodePage(result,CP_UTF16,true);
+    cpUTF16BE:
+      SetCodePage(result,CP_UTF16BE,true);
+  end;
+end;
 
 function TXTCodePage(AFileCodePage:TFileCodePage):TCodePage;
 begin
@@ -365,8 +427,8 @@ begin
       result:=cpUTF8BOM;
     fcpUTF16:
       result:=cpUTF16;
-    fcpUTF16BOM:
-      result:=cpUTF16BOM;
+    fcpUTF16BE:
+      result:=cpUTF16BE;
   end;
 end;
 
