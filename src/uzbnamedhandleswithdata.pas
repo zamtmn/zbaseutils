@@ -48,6 +48,7 @@ type
    procedure RegisterHandleName(Handle:GHandleType;HandleName:GNameType);virtual;
    function GetPLincedData(Handle:GHandleType):PGLincedData;
    function GetDataIndex(Handle:GHandleType):SizeInt;
+   function isValidIndex(AIdx:SizeInt):Boolean;inline;
    function GetHandleName(Handle:GHandleType):GNameType;
    function CreateOrGetHandleAndSetData(HandleName:GNameType;data:GLincedData):GHandleType;
  end;
@@ -110,6 +111,11 @@ function GTNamedHandlesWithData<GHandleType,GHandleManipulator,GNameType,GNameMa
 begin
   result:=GHandleManipulator.GetIndex(Handle);
 end;
+function GTNamedHandlesWithData<GHandleType,GHandleManipulator,GNameType,GNameManipulator,GLincedData>.isValidIndex(AIdx:SizeInt):Boolean;inline;
+begin
+  result:=(AIdx>=0)and(AIdx<HandleDataVector.Size);
+end;
+
 function GTNamedHandlesWithData<GHandleType,GHandleManipulator,GNameType,GNameManipulator,GLincedData>.GetHandleName(Handle:GHandleType):GNameType;
 begin
   result:=HandleDataVector.Mutable[GHandleManipulator.GetIndex(Handle)]^.N;

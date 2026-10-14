@@ -47,7 +47,7 @@ GTSimpleHandles<GHandleType,GHandleManipulator>=object
   constructor init;
   destructor done;virtual;
   function CreateHandle:GHandleType;virtual;
-  function GetInitialHandleValue:GHandleType;
+  function GetInitialHandleValue:GHandleType;static;
   //procedure SetSeed(const Value:GHandleType);
 end;
 
